@@ -2,7 +2,7 @@
 Provisioning details for OSX
 
 ```shell
-git clone git@github.com:jeroenseegers/provision-osx.git
-cd provision-osx
+git clone git@github.com:k-olthof/provision-mac.git
+cd provision-mac
 ./provision.sh
 ```
