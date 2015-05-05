@@ -1,0 +1,45 @@
+---
+# file: roles/common/tasks/main.yml
+
+- name: Created Development directory
+  file: path=/Users/{{ user }}/Development state=directory
+
+- name: Clone dotfiles repository
+  git: repo=ssh://git@github.com/k-olthof/dotfiles.git
+       dest=/Users/{{ user }}/Development/dotfiles
+       accept_hostkey=yes
+
+- name: Symlink dotfiles
+  file: path=/Users/{{ user }}/.{{ item }}
+        src=/Users/{{ user }}/Development/dotfiles/.{{ item }}
+        state=link
+  with_items:
+    - bash_aliases
+    - bash_functions
+    - bash_profile
+    - bash_profile_osx
+    - bashrc
+    - tmux.conf
+    - vim
+    - vimrc
+
+- name: Init dotfiles submodules
+  command: git submodule update --init chdir=/Users/{{ user }}/Development/dotfiles
+
+- name: Clear menubar
+  command: defaults write com.apple.systemuiserver menuExtras -array
+
+- name: Add default menubar icons
+  command: defaults write com.apple.systemuiserver menuExtras -array-add "{{ item }}"
+  with_items:
+    - "/System/Library/CoreServices/Menu Extras/Volume.menu"
+    - "/System/Library/CoreServices/Menu Extras/VPN.menu"
+    - "/System/Library/CoreServices/Menu Extras/AirPort.menu"
+    - "/System/Library/CoreServices/Menu Extras/Battery.menu"
+    - "/System/Library/CoreServices/Menu Extras/Clock.menu"
+
+- name: Restart SystemUIServer
+  command: killall SystemUIServer
+
+- name: Disable "natural" scrolling
+  command: defaults write -g com.apple.swipescrolldirection -bool false
