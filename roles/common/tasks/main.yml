@@ -19,6 +19,7 @@
     - bash_profile
     - bash_profile_osx
     - bashrc
+    - gitconfig
     - tmux.conf
     - vim
     - vimrc
